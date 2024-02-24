@@ -1,11 +1,56 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
 
-const inter = Inter({ subsets: ["latin"] });
+import { useWeb3React } from "@web3-react/core";
+import { InjectedConnector } from "@web3-react/injected-connector";
+import { abi } from "../constants/abi";
+import { useState, useEffect } from "react";
+import { ethers } from "ethers";
+
+export const injected = new InjectedConnector();
 
 export default function Home() {
+  const [hasMetamask, setHasMetamask] = useState(false);
+
+  useEffect(() => {
+    if (typeof window.ethereum !== "undefined") {
+      setHasMetamask(true);
+    }
+  });
+
+  const {
+    active,
+    activate,
+    chainId,
+    account,
+    library: provider,
+  } = useWeb3React();
+
+  async function connect() {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        await activate(injected);
+        setHasMetamask(true);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+
+  async function execute() {
+    if (active) {
+      const signer = provider.getSigner();
+      const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      try {
+        await contract.store(42);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      console.log("Please install MetaMask");
+    }
+  }
+
   return (
     <>
       <Head>
@@ -14,99 +59,19 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${styles.main} ${inter.className}`}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.js</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{" "}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
+      <main>
+        <div>
+          {hasMetamask ? (
+            active ? (
+              "Connected! "
+            ) : (
+              <button onClick={() => connect()}>Connect</button>
+            )
+          ) : (
+            "Please install metamask"
+          )}
 
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
+          {active ? <button onClick={() => execute()}>Execute</button> : ""}
         </div>
       </main>
     </>
