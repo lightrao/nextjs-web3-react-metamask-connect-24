@@ -11,7 +11,7 @@ import { ethers } from "ethers";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const injected = new InjectedConnector();
+export const injected = new InjectedConnector(); // MetaMask connection (window.ethereum)
 
 export default function Home() {
   const [hasMetamask, setHasMetamask] = useState(false);
@@ -27,17 +27,19 @@ export default function Home() {
     activate,
     chainId,
     account,
-    library: provider,
+    library: provider, // web3 provider instance from the connected MetaMask wallet
   } = useWeb3React();
 
   async function connect() {
     if (typeof window.ethereum !== "undefined") {
       try {
-        await activate(injected);
+        await activate(injected); // used to connect MetaMask
         setHasMetamask(true);
       } catch (e) {
         console.log(e);
       }
+    } else {
+      console.log("Please install MetaMask");
     }
   }
 

@@ -74,3 +74,13 @@ yarn add @web3-react/injected-connector@^6.0.7
 ## Edit pages to realize project
 
 I have deployed and approved SimpleStorage contract on sepolia for testing.
+
+## Quickstart
+
+Clone and install dependencies:
+
+```bash
+git clone https://github.com/lightrao/nextjs-web3-react-metamask-connect-24.git
+cd nextjs-web3-react-metamask-connect-24
+yarn
+```
