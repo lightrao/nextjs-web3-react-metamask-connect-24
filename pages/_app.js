@@ -1,9 +1,9 @@
 import "@/styles/globals.css";
 
 import { Web3ReactProvider } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3Provider } from "@ethersproject/providers"; // just import providers of ethers
 
-const getLibrary = (provider) => {
+const getLibrary = (provider, connector) => {
   return new Web3Provider(provider);
 };
 

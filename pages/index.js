@@ -1,10 +1,15 @@
 import Head from "next/head";
+import { Inter } from "next/font/google";
+import styles from "@/styles/Home.module.css";
 
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { abi } from "../constants/abi";
+import { contractAddress } from "../constants/contract-address";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const injected = new InjectedConnector();
 
@@ -39,7 +44,6 @@ export default function Home() {
   async function execute() {
     if (active) {
       const signer = provider.getSigner();
-      const contractAddress = "0x2a8A3337378d988038071E1B0f6a5940D80e3f42";
       const contract = new ethers.Contract(contractAddress, abi, signer);
       try {
         await contract.store(42);
@@ -59,7 +63,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className={`${styles.main} ${inter.className}`}>
         <div>
           {hasMetamask ? (
             active ? (

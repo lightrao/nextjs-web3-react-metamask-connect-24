@@ -66,7 +66,9 @@ yarn remove ethers
 ## Install web3-react
 
 ```bash
-yarn add web3-react@^6.1.9
+yarn add @web3-react/core@^6.1.9
+yarn add @ethersproject/providers@^5.5.3
+yarn add @web3-react/injected-connector@^6.0.7
 ```
 
 ## Edit pages to realize project
